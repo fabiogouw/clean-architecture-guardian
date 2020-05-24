@@ -1,22 +1,25 @@
-package com.fabiogouw.cleanarchguardian.rules;
+package com.fabiogouw.architectureguardian.rules;
 
+import com.fabiogouw.architectureguardian.GuardianOptions;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
-import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
-public class PackageDependencyRule {
+public class DomainPackageDependencyRule extends Rule {
 
-    public void test() {
-        JavaClasses classesToCheck = new ClassFileImporter()
-                .importPackages("io.reflectoring.buckpal..");
+    public DomainPackageDependencyRule(GuardianOptions options) {
+        super(options);
+    }
+
+    @Override
+    public void validate(JavaClasses classesToCheck) {
         noClasses()
                 .that()
-                .resideInAPackage("io.reflectoring.buckpal.domain..")
+                .resideInAPackage(getCurrentOptions().getDomainPackagePattern())
                 .should()
                 .dependOnClassesThat()
-                .resideInAnyPackage("io.reflectoring.buckpal.application..")
+                .resideOutsideOfPackages("java..", getCurrentOptions().getDomainPackagePattern())
                 .check(classesToCheck);
         /*
         layeredArchitecture()
