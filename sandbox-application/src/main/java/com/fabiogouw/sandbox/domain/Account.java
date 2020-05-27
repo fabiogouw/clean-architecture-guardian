@@ -1,4 +1,4 @@
 package com.fabiogouw.sandbox.domain;
 
-public class Toy {
+public class Account {
 }
